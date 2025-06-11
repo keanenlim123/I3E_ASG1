@@ -37,8 +37,6 @@ public class PlayerBehaviour : MonoBehaviour
         }
         else if (other.CompareTag("Door"))
         {
-            // Set the canInteract flag to true
-            // Get the CoinBehaviour component from the detected object
             canInteract = true;
             currentDoor = other.GetComponent<DoorBehaviour>();
         }
@@ -107,22 +105,26 @@ public class PlayerBehaviour : MonoBehaviour
     // Trigger Callback for when the player exits a trigger collider
     void OnTriggerExit(Collider other)
     {
-        // Check if the player has a detected diamond
-        if (currentDiamond != null)
+        // If the player exits the diamond trigger
+        if (currentDiamond != null && other.gameObject == currentDiamond.gameObject)
         {
-            // If the object that exited the trigger is the same as the current diamond
-            if (other.gameObject == currentDiamond.gameObject)
-            {
-                // Set the canInteract flag to false
-                // Set the current diamond to null
-                // This prevents the player from interacting with the diamond
-                canInteract = false;
-                currentDiamond = null;
-            }
-            else
-            {
-                canInteract = false;
-            }
+            canInteract = false;
+            currentDiamond = null;
+        }
+
+        // If the player exits the door trigger
+        else if (currentDoor != null && other.gameObject == currentDoor.gameObject)
+        {
+            canInteract = false;
+            currentDoor = null;
+        }
+
+        // Optional: If you exit any other interactable, reset interaction
+        else if (other.CompareTag("Key"))
+        {
+            canInteract = false;
+            keyCollected = null;
         }
     }
+
 }
