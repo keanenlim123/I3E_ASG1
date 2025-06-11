@@ -4,7 +4,7 @@ public class diamondBehaviour : MonoBehaviour
 {
     // Diamond value that will be added to the player's score
     [SerializeField]
-    int diamondValue = 1;
+    int diamondValue = 10;
     [SerializeField]
     float rotationSpeed = 90f;
 
@@ -28,7 +28,7 @@ public class diamondBehaviour : MonoBehaviour
         // This is done by calling the ModifyScore method on the player object
         // The diamond is passed as an argument to the method
         // This allows the player to gain points when they collect the diamond
-        player.ModifyScore(diamondValue);
+        player.ModifyPoints(diamondValue);
 
         Destroy(gameObject); // Destroy the diamond object
     }

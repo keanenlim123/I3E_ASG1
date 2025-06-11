@@ -2,19 +2,16 @@ using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    int maxHealth = 100;
-    // Player's current health
-    int currentHealth = 100;
-    // Player's current score
-    int currentScore = 0;
+    [SerializeField]
+    int currentPoints = 0;
     // Flag to check if the player can interact with objects
     bool canInteract = false;
 
     diamondBehaviour currentDiamond = null;
 
+    StarBehaviour currentStar = null;
     KeyBehaviour keyCollected = null;
     bool hasKey = false;
-
     DoorBehaviour currentDoor = null;
 
     // The Interact callback for the Interact Input Action
@@ -29,6 +26,11 @@ public class PlayerBehaviour : MonoBehaviour
             // Get the DiamondBehaviour component from the detected object
             canInteract = true;
             currentDiamond = other.GetComponent<diamondBehaviour>();
+        }
+        else if (other.CompareTag("Star"))
+        {
+            canInteract = true;
+            currentStar = other.GetComponent<StarBehaviour>();
         }
         else if (other.CompareTag("Key"))
         {
@@ -49,6 +51,11 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 Debug.Log("Interacting with diamond");
                 currentDiamond.Collect(this);
+            }
+            else if (currentStar != null)
+            {
+                Debug.Log("Interacting with diamond");
+                currentStar.Collect(this);
             }
             else if (keyCollected != null)
             {
@@ -71,42 +78,21 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-
     // Method to modify the player's score
     // This method takes an integer amount as a parameter
     // It adds the amount to the player's current score
     // The method is public so it can be accessed from other scripts
-    public void ModifyScore(int amt)
+    public void ModifyPoints(int amt)
     {
         // Increase currentScore by the amount passed as an argument
-        currentScore += amt;
-    }
-
-    // Method to modify the player's health
-    // This method takes an integer amount as a parameter
-    // It adds the amount to the player's current health
-    // The method is public so it can be accessed from other scripts
-    public void ModifyHealth(int amount)
-    {
-        // Check if the current health is less than the maximum health
-        // If it is, increase the current health by the amount passed as an argument
-        if (currentHealth < maxHealth)
-        {
-            currentHealth += amount;
-            // Check if the current health exceeds the maximum health
-            // If it does, set the current health to the maximum health
-            if (currentHealth > maxHealth)
-            {
-                currentHealth = maxHealth;
-            }
-        }
+        currentPoints += amt;
     }
 
     // Trigger Callback for when the player exits a trigger collider
     void OnTriggerExit(Collider other)
     {
         // If the player exits the diamond trigger
-        if (currentDiamond != null && other.gameObject == currentDiamond.gameObject)
+        if (other.gameObject == currentDiamond.gameObject)
         {
             canInteract = false;
             currentDiamond = null;
@@ -124,6 +110,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             canInteract = false;
             keyCollected = null;
+        }
+        else if (other.CompareTag("Star"))
+        {
+            canInteract = false;
+            currentStar = null;
         }
     }
 
