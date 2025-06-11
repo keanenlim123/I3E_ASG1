@@ -9,7 +9,10 @@ public class PlayerBehaviour : MonoBehaviour
     int currentScore = 0;
     // Flag to check if the player can interact with objects
     bool canInteract = false;
+
     diamondBehaviour currentDiamond = null;
+
+    KeyBehaviour keyCollected = null;
 
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
@@ -24,6 +27,11 @@ public class PlayerBehaviour : MonoBehaviour
             canInteract = true;
             currentDiamond = other.GetComponent<diamondBehaviour>();
         }
+        else if (other.CompareTag("Key"))
+        {
+            canInteract = true;
+            keyCollected = other.GetComponent<KeyBehaviour>();
+        }
     }
     void OnInteract()
     {
@@ -34,8 +42,14 @@ public class PlayerBehaviour : MonoBehaviour
                 Debug.Log("Interacting with diamond");
                 currentDiamond.Collect(this);
             }
+            else if (keyCollected != null)
+            {
+                Debug.Log("Interacting with diamond");
+                keyCollected.Collect(this);
+            }
         }
     }
+
 
     // Method to modify the player's score
     // This method takes an integer amount as a parameter
@@ -67,9 +81,6 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    // Trigger Callback for when the player enters a trigger collider
-    
-
     // Trigger Callback for when the player exits a trigger collider
     void OnTriggerExit(Collider other)
     {
@@ -84,6 +95,10 @@ public class PlayerBehaviour : MonoBehaviour
                 // This prevents the player from interacting with the diamond
                 canInteract = false;
                 currentDiamond = null;
+            }
+            else
+            {
+                canInteract = false;
             }
         }
     }

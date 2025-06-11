@@ -5,6 +5,14 @@ public class diamondBehaviour : MonoBehaviour
     // Diamond value that will be added to the player's score
     [SerializeField]
     int diamondValue = 1;
+    [SerializeField]
+    float rotationSpeed = 90f;
+
+    void Update()
+    {
+        // Rotate the diamond around its Y axis
+        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+    }
 
     // Method to collect the diamond
     // This method will be called when the player interacts with the diamond
