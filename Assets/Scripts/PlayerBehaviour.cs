@@ -13,6 +13,7 @@ public class PlayerBehaviour : MonoBehaviour
     diamondBehaviour currentDiamond = null;
 
     KeyBehaviour keyCollected = null;
+    DoorBehaviour currentDoor = null;
 
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
@@ -32,6 +33,13 @@ public class PlayerBehaviour : MonoBehaviour
             canInteract = true;
             keyCollected = other.GetComponent<KeyBehaviour>();
         }
+        else if (other.CompareTag("Door"))
+        {
+            // Set the canInteract flag to true
+            // Get the CoinBehaviour component from the detected object
+            canInteract = true;
+            currentDoor = other.GetComponent<DoorBehaviour>();
+        }
     }
     void OnInteract()
     {
@@ -44,8 +52,13 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else if (keyCollected != null)
             {
-                Debug.Log("Interacting with diamond");
+                Debug.Log("Interacting with key");
                 keyCollected.Collect(this);
+            }
+            else if (currentDoor != null)
+            {
+                Debug.Log("Interacting with door");
+                currentDoor.Interact();
             }
         }
     }
