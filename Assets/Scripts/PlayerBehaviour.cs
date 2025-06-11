@@ -13,6 +13,8 @@ public class PlayerBehaviour : MonoBehaviour
     diamondBehaviour currentDiamond = null;
 
     KeyBehaviour keyCollected = null;
+    bool hasKey = false;
+
     DoorBehaviour currentDoor = null;
 
     // The Interact callback for the Interact Input Action
@@ -54,11 +56,19 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 Debug.Log("Interacting with key");
                 keyCollected.Collect(this);
+                hasKey = true;
             }
             else if (currentDoor != null)
             {
-                Debug.Log("Interacting with door");
-                currentDoor.Interact();
+                if (hasKey)
+                {
+                    Debug.Log("Interacting with door");
+                    currentDoor.Interact();
+                }
+                else
+                {
+                    Debug.Log("You need a key to open the door!");
+                }
             }
         }
     }
