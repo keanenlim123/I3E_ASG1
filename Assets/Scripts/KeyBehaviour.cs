@@ -3,8 +3,6 @@ using UnityEngine;
 public class KeyBehaviour : MonoBehaviour
 {
     [SerializeField]
-    bool hasKey = false;
-    [SerializeField]
     float rotationSpeed = 90f;
 
     void Update()
@@ -14,7 +12,6 @@ public class KeyBehaviour : MonoBehaviour
     }
     public void Collect(PlayerBehaviour player)
     {
-        hasKey = true;
         Destroy(gameObject); // Destroy the key object
     }
 }

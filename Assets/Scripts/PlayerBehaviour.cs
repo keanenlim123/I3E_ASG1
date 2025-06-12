@@ -14,34 +14,84 @@ public class PlayerBehaviour : MonoBehaviour
     bool hasKey = false;
     DoorBehaviour currentDoor = null;
 
+    SpikesBehaviour currentSpikes = null;
+
+    [SerializeField]
+    float interactRange = 2f;
+    [SerializeField]
+    float rayHeightOffset = 1.0f;
+
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
-    void OnTriggerEnter(Collider other)
+    void Update()
     {
-        Debug.Log(other.gameObject.name);
-        // Check if the player detects a trigger collider tagged as "Diamond" or "Door"
-        if (other.CompareTag("Diamond"))
+        RaycastHit hit;
+        canInteract = false;
+
+        // Cast a ray from the player forward
+        Vector3 rayOrigin = transform.position + Vector3.up * 1.0f; // Adjust the height (e.g. 1.0f)
+        if (Physics.Raycast(rayOrigin, transform.forward, out hit, interactRange))
         {
-            // Set the canInteract flag to true
-            // Get the DiamondBehaviour component from the detected object
-            canInteract = true;
-            currentDiamond = other.GetComponent<diamondBehaviour>();
+            GameObject hitObject = hit.collider.gameObject;
+
+            // Check for each interactable type
+            if (hitObject.CompareTag("Diamond"))
+            {
+                canInteract = true;
+                currentDiamond = hitObject.GetComponent<diamondBehaviour>();
+                currentStar = null;
+                keyCollected = null;
+                currentDoor = null;
+                currentSpikes = null;
+            }
+            else if (hitObject.CompareTag("Star"))
+            {
+                canInteract = true;
+                currentStar = hitObject.GetComponent<StarBehaviour>();
+                currentDiamond = null;
+                keyCollected = null;
+                currentDoor = null;
+                currentSpikes = null;
+            }
+            else if (hitObject.CompareTag("Key"))
+            {
+                canInteract = true;
+                keyCollected = hitObject.GetComponent<KeyBehaviour>();
+                currentDiamond = null;
+                currentStar = null;
+                currentDoor = null;
+                currentSpikes = null;
+            }
+            else if (hitObject.CompareTag("Door"))
+            {
+                canInteract = true;
+                currentDoor = hitObject.GetComponent<DoorBehaviour>();
+                currentDiamond = null;
+                currentStar = null;
+                keyCollected = null;
+                currentSpikes = null;
+            }
+            else if (hitObject.CompareTag("Spikes"))
+            {
+                canInteract = true;
+                currentSpikes = hitObject.GetComponent<SpikesBehaviour>();
+                currentDiamond = null;
+                currentStar = null;
+                keyCollected = null;
+                currentDoor = null;
+            }
         }
-        else if (other.CompareTag("Star"))
+        else
         {
-            canInteract = true;
-            currentStar = other.GetComponent<StarBehaviour>();
+            // Clear references if nothing is hit
+            canInteract = false;
+            currentDiamond = null;
+            currentStar = null;
+            keyCollected = null;
+            currentDoor = null;
+            currentSpikes = null;
         }
-        else if (other.CompareTag("Key"))
-        {
-            canInteract = true;
-            keyCollected = other.GetComponent<KeyBehaviour>();
-        }
-        else if (other.CompareTag("Door"))
-        {
-            canInteract = true;
-            currentDoor = other.GetComponent<DoorBehaviour>();
-        }
+        Debug.DrawRay(rayOrigin, transform.forward * interactRange, Color.green);
     }
     void OnInteract()
     {
@@ -54,7 +104,7 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else if (currentStar != null)
             {
-                Debug.Log("Interacting with diamond");
+                Debug.Log("Interacting with star");
                 currentStar.Collect(this);
             }
             else if (keyCollected != null)
@@ -88,34 +138,10 @@ public class PlayerBehaviour : MonoBehaviour
         currentPoints += amt;
     }
 
-    // Trigger Callback for when the player exits a trigger collider
-    void OnTriggerExit(Collider other)
+    public void MinusPoints(int amt)
     {
-        // If the player exits the diamond trigger
-        if (other.gameObject == currentDiamond.gameObject)
-        {
-            canInteract = false;
-            currentDiamond = null;
-        }
-
-        // If the player exits the door trigger
-        else if (currentDoor != null && other.gameObject == currentDoor.gameObject)
-        {
-            canInteract = false;
-            currentDoor = null;
-        }
-
-        // Optional: If you exit any other interactable, reset interaction
-        else if (other.CompareTag("Key"))
-        {
-            canInteract = false;
-            keyCollected = null;
-        }
-        else if (other.CompareTag("Star"))
-        {
-            canInteract = false;
-            currentStar = null;
-        }
+        // Increase currentScore by the amount passed as an argument
+        currentPoints -= amt;
     }
 
 }
