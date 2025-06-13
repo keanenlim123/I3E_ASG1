@@ -1,22 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
-    Image keyIcon;
-    [SerializeField]
+    private TextMeshProUGUI interactPromptText;
 
+    [SerializeField]
+    Image keyIcon;
+
+    [SerializeField]
+    Image bootsIcon;
+    [SerializeField]
+    
     int currentPoints = 0;
     [SerializeField]
     public Transform spawnLocation;
     // Flag to check if the player can interact with objects
     bool canInteract = false;
+    
 
     diamondBehaviour currentDiamond = null;
 
     StarBehaviour currentStar = null;
     KeyBehaviour keyCollected = null;
+
+    BootsBehaviour bootsCollected = null;
     bool hasKey = false;
+
+    bool hasBoots = false;
     DoorBehaviour currentDoor = null;
 
     [SerializeField]
@@ -45,6 +57,7 @@ public class PlayerBehaviour : MonoBehaviour
                 currentDiamond = hitObject.GetComponent<diamondBehaviour>();
                 currentStar = null;
                 keyCollected = null;
+                bootsCollected = null;
                 currentDoor = null;
             }
             else if (hitObject.CompareTag("Star"))
@@ -53,14 +66,29 @@ public class PlayerBehaviour : MonoBehaviour
                 currentStar = hitObject.GetComponent<StarBehaviour>();
                 currentDiamond = null;
                 keyCollected = null;
+                bootsCollected = null;
                 currentDoor = null;
             }
             else if (hitObject.CompareTag("Key"))
             {
                 canInteract = true;
+                interactPromptText.text = "Press E to pick up Key!";
+                interactPromptText.gameObject.SetActive(true);
                 keyCollected = hitObject.GetComponent<KeyBehaviour>();
                 currentDiamond = null;
                 currentStar = null;
+                bootsCollected = null;
+                currentDoor = null;
+            }
+            else if (hitObject.CompareTag("Boots"))
+            {
+                canInteract = true;
+                interactPromptText.text = "Press E to pick up boots!";
+                interactPromptText.gameObject.SetActive(true);
+                bootsCollected = hitObject.GetComponent<BootsBehaviour>();
+                currentDiamond = null;
+                currentStar = null;
+                keyCollected = null;
                 currentDoor = null;
             }
             else if (hitObject.CompareTag("Door"))
@@ -70,6 +98,7 @@ public class PlayerBehaviour : MonoBehaviour
                 currentDiamond = null;
                 currentStar = null;
                 keyCollected = null;
+                bootsCollected = null;
             }
         }
         else
@@ -77,7 +106,9 @@ public class PlayerBehaviour : MonoBehaviour
             currentDiamond = null;
             currentStar = null;
             keyCollected = null;
+            bootsCollected = null;
             currentDoor = null;
+            interactPromptText.gameObject.SetActive(false);
         }
 
         Debug.DrawRay(rayOrigin, transform.forward * interactRange, Color.green);
@@ -128,6 +159,14 @@ public class PlayerBehaviour : MonoBehaviour
                 Debug.Log("Interacting with star");
                 currentStar.Collect(this);
             }
+            else if (bootsCollected != null)
+            {
+                Debug.Log("Interacting with boots");
+                bootsCollected.Collect(this);
+                hasBoots = true;
+                bootsIcon.gameObject.SetActive(true);
+            }
+
             else if (keyCollected != null)
             {
                 Debug.Log("Interacting with key");
