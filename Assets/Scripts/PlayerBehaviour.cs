@@ -44,6 +44,8 @@ public class PlayerBehaviour : MonoBehaviour
     float interactRange = 2f;
     [SerializeField]
     float rayHeightOffset = 1.0f;
+    DoorBehaviour1 currentDoor2 = null;
+
 
 
 
@@ -89,6 +91,16 @@ public class PlayerBehaviour : MonoBehaviour
                 bootsCollected = null;
                 currentDoor = null;
             }
+            else if (hitObject.CompareTag("Door2"))
+            {
+                canInteract = true;
+                currentDoor2 = hitObject.GetComponent<DoorBehaviour1>();
+                currentDiamond = null;
+                currentStar = null;
+                keyCollected = null;
+                bootsCollected = null;
+                currentDoor = null;
+            }
             else if (hitObject.CompareTag("Boots"))
             {
                 canInteract = true;
@@ -117,7 +129,9 @@ public class PlayerBehaviour : MonoBehaviour
             keyCollected = null;
             bootsCollected = null;
             currentDoor = null;
+            currentDoor2 = null;
             interactPromptText.gameObject.SetActive(false);
+
         }
 
         Debug.DrawRay(rayOrigin, transform.forward * interactRange, Color.green);
@@ -133,17 +147,7 @@ public class PlayerBehaviour : MonoBehaviour
                 spikes.Collect(this);
                 Respawn();
                 transform.position = spawnLocation.position;
-                Debug.Log("TELEPORTED");
-            }
-        }
-        else if (other.CompareTag("Player"))
-        {
-            WaterBehaviour water = other.GetComponent<WaterBehaviour>();
-            if (water != null)
-            {
-                water.Collect(this);
-                Respawn(); // Optional: teleport player back
-                transform.position = spawnLocation.position;
+                Debug.Log("Teleport");
             }
         }
     }
@@ -198,6 +202,11 @@ public class PlayerBehaviour : MonoBehaviour
                 hasKey = true;
                 keyIcon.gameObject.SetActive(true); // Show the UI image
             }
+            else if (currentDoor2 != null)
+            {
+                Debug.Log("Interacting with Door2");
+                currentDoor2.OpenDoor();
+            }
             else if (currentDoor != null)
             {
                 if (hasKey)
@@ -247,6 +256,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     void UpdateStarUI()
     {
-        starCounterText.text = "Stars: " + starCount + " / 3";
+        starCounterText.text = "Stars: " + starCount + " /3";
     }
 }

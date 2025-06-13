@@ -12,6 +12,7 @@ TagManager:
   - Star
   - Door
   - Key
+  - Door2
   layers:
   - Default
   - TransparentFX

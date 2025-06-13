@@ -3,15 +3,40 @@ using UnityEngine;
 public class WaterBehaviour : MonoBehaviour
 {
     [SerializeField]
-    int minusValue = 10;
+    int minusValue = 20;
+
+    [SerializeField]
+    float damageInterval = 1.0f; // Time in seconds between point deductions
+
+    private float damageTimer = 0f;
 
     public void Collect(PlayerBehaviour player)
     {
-        // Only reduce points if player does NOT have boots
         if (!player.HasBoots())
         {
             player.MinusPoints(minusValue);
         }
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerBehaviour player = other.GetComponent<PlayerBehaviour>();
+            if (player != null)
+            {
+                Collect(player);
+                player.Respawn();
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            // Reset the timer when the player leaves the water
+            damageTimer = 0f;
+        }
+    }
 }
