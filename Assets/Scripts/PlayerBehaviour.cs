@@ -11,14 +11,23 @@ public class PlayerBehaviour : MonoBehaviour
 
     [SerializeField]
     Image bootsIcon;
+
+    [SerializeField] private TextMeshProUGUI diamondCounterText;
+    [SerializeField] private TextMeshProUGUI starCounterText;
+
+    private int diamondCount = 0;
+    private int starCount = 0;
+
     [SerializeField]
-    
+    private TextMeshProUGUI scoreText;
+    [SerializeField]
+
     int currentPoints = 0;
     [SerializeField]
     public Transform spawnLocation;
     // Flag to check if the player can interact with objects
     bool canInteract = false;
-    
+
 
     diamondBehaviour currentDiamond = null;
 
@@ -124,6 +133,17 @@ public class PlayerBehaviour : MonoBehaviour
                 spikes.Collect(this);
                 Respawn();
                 transform.position = spawnLocation.position;
+                Debug.Log("TELEPORTED");
+            }
+        }
+        else if (other.CompareTag("Player"))
+        {
+            WaterBehaviour water = other.GetComponent<WaterBehaviour>();
+            if (water != null)
+            {
+                water.Collect(this);
+                Respawn(); // Optional: teleport player back
+                transform.position = spawnLocation.position;
             }
         }
     }
@@ -153,11 +173,15 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 Debug.Log("Interacting with diamond");
                 currentDiamond.Collect(this);
+                diamondCount++;
+                UpdateDiamondUI();
             }
             else if (currentStar != null)
             {
                 Debug.Log("Interacting with star");
                 currentStar.Collect(this);
+                starCount++;
+                UpdateStarUI();
             }
             else if (bootsCollected != null)
             {
@@ -189,6 +213,12 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    // Function to check player haveboots
+    public bool HasBoots()
+    {
+        return hasBoots;
+    }
+
     // Method to modify the player's score
     // This method takes an integer amount as a parameter
     // It adds the amount to the player's current score
@@ -197,12 +227,26 @@ public class PlayerBehaviour : MonoBehaviour
     {
         // Increase currentScore by the amount passed as an argument
         currentPoints += amt;
+        UpdateScoreUI();
     }
 
     public void MinusPoints(int amt)
     {
         // Increase currentScore by the amount passed as an argument
         currentPoints -= amt;
+        UpdateScoreUI();
+    }
+    void UpdateScoreUI()
+    {
+        scoreText.text = "Points: " + currentPoints.ToString() + " / 350";
+    }
+    void UpdateDiamondUI()
+    {
+        diamondCounterText.text = "Diamonds: " + diamondCount + " / 20";
     }
 
+    void UpdateStarUI()
+    {
+        starCounterText.text = "Stars: " + starCount + " / 3";
+    }
 }
