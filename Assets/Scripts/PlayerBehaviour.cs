@@ -4,6 +4,8 @@ public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
     int currentPoints = 0;
+    [SerializeField]
+    public Transform spawnLocation;
     // Flag to check if the player can interact with objects
     bool canInteract = false;
 
@@ -14,27 +16,26 @@ public class PlayerBehaviour : MonoBehaviour
     bool hasKey = false;
     DoorBehaviour currentDoor = null;
 
-    SpikesBehaviour currentSpikes = null;
-
     [SerializeField]
     float interactRange = 2f;
     [SerializeField]
     float rayHeightOffset = 1.0f;
 
+    
+
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
+
     void Update()
     {
         RaycastHit hit;
         canInteract = false;
 
-        // Cast a ray from the player forward
-        Vector3 rayOrigin = transform.position + Vector3.up * 1.0f; // Adjust the height (e.g. 1.0f)
+        Vector3 rayOrigin = transform.position + Vector3.up * 1.0f;
         if (Physics.Raycast(rayOrigin, transform.forward, out hit, interactRange))
         {
             GameObject hitObject = hit.collider.gameObject;
 
-            // Check for each interactable type
             if (hitObject.CompareTag("Diamond"))
             {
                 canInteract = true;
@@ -42,7 +43,6 @@ public class PlayerBehaviour : MonoBehaviour
                 currentStar = null;
                 keyCollected = null;
                 currentDoor = null;
-                currentSpikes = null;
             }
             else if (hitObject.CompareTag("Star"))
             {
@@ -51,7 +51,6 @@ public class PlayerBehaviour : MonoBehaviour
                 currentDiamond = null;
                 keyCollected = null;
                 currentDoor = null;
-                currentSpikes = null;
             }
             else if (hitObject.CompareTag("Key"))
             {
@@ -60,7 +59,6 @@ public class PlayerBehaviour : MonoBehaviour
                 currentDiamond = null;
                 currentStar = null;
                 currentDoor = null;
-                currentSpikes = null;
             }
             else if (hitObject.CompareTag("Door"))
             {
@@ -69,30 +67,50 @@ public class PlayerBehaviour : MonoBehaviour
                 currentDiamond = null;
                 currentStar = null;
                 keyCollected = null;
-                currentSpikes = null;
-            }
-            else if (hitObject.CompareTag("Spikes"))
-            {
-                canInteract = true;
-                currentSpikes = hitObject.GetComponent<SpikesBehaviour>();
-                currentDiamond = null;
-                currentStar = null;
-                keyCollected = null;
-                currentDoor = null;
             }
         }
         else
         {
-            // Clear references if nothing is hit
-            canInteract = false;
             currentDiamond = null;
             currentStar = null;
             keyCollected = null;
             currentDoor = null;
-            currentSpikes = null;
         }
+
         Debug.DrawRay(rayOrigin, transform.forward * interactRange, Color.green);
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Spikes"))
+        {
+            SpikesBehaviour spikes = other.GetComponent<SpikesBehaviour>();
+            if (spikes != null)
+            {
+                spikes.Collect(this);
+                Respawn();
+                transform.position = spawnLocation.position;
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Spikes"))
+        {
+            Debug.Log("Player exited spikes trigger area.");
+            // Add any logic you want when the player leaves the spikes area here
+        }
+    }
+
+    public void Respawn()
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.position = spawnLocation.position;
+    }
+
     void OnInteract()
     {
         if (canInteract)
