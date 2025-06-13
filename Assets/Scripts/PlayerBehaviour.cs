@@ -1,8 +1,11 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
+    Image keyIcon;
+    [SerializeField]
+
     int currentPoints = 0;
     [SerializeField]
     public Transform spawnLocation;
@@ -21,7 +24,7 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     float rayHeightOffset = 1.0f;
 
-    
+
 
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
@@ -130,6 +133,7 @@ public class PlayerBehaviour : MonoBehaviour
                 Debug.Log("Interacting with key");
                 keyCollected.Collect(this);
                 hasKey = true;
+                keyIcon.gameObject.SetActive(true); // Show the UI image
             }
             else if (currentDoor != null)
             {
