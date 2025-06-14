@@ -46,9 +46,8 @@ public class PlayerBehaviour : MonoBehaviour
     float rayHeightOffset = 1.0f;
     DoorBehaviour1 currentDoor2 = null;
 
-
-
-
+    [SerializeField]
+    private TextMeshProUGUI objectiveText;
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
 
@@ -154,9 +153,16 @@ public class PlayerBehaviour : MonoBehaviour
             WaterBehaviour water = other.GetComponent<WaterBehaviour>();
             if (water != null)
             {
-                water.Collect(this);
-                Respawn();
-                Debug.Log("Teleport (Water)");
+                if (!HasBoots())
+                {
+                    water.Collect(this);  // Deduct points
+                    Respawn();            // Teleport back
+                    Debug.Log("Teleport (Water)");
+                }
+                else
+                {
+                    Debug.Log("Player has boots – safe in water!");
+                }
             }
         }
     }
@@ -228,6 +234,7 @@ public class PlayerBehaviour : MonoBehaviour
                 bootsCollected.Collect(this);
                 hasBoots = true;
                 bootsIcon.gameObject.SetActive(true);
+                objectiveText.text = "- Escape";
             }
 
             else if (keyCollected != null)
@@ -236,6 +243,7 @@ public class PlayerBehaviour : MonoBehaviour
                 keyCollected.Collect(this);
                 hasKey = true;
                 keyIcon.gameObject.SetActive(true); // Show the UI image
+                objectiveText.text = "- Open the Door!";
             }
             else if (currentDoor2 != null)
             {
@@ -248,12 +256,14 @@ public class PlayerBehaviour : MonoBehaviour
                 {
                     Debug.Log("Interacting with door");
                     currentDoor.Interact();
+                    objectiveText.text = "- Find the Boots!";
                 }
                 else
                 {
                     Debug.Log("You need a key to open the door!");
                     interactPromptText.gameObject.SetActive(true);
                     interactPromptText.text = "Door is Locked!";
+                    objectiveText.text = "- Find a Key!";
                 }
             }
             else

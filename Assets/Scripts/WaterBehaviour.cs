@@ -23,10 +23,15 @@ public class WaterBehaviour : MonoBehaviour
             if (player != null)
             {
                 Collect(player);
-                player.Respawn();
+
+                if (!player.HasBoots())
+                {
+                    player.Respawn();
+                }
             }
         }
     }
+
 
     void OnTriggerExit(Collider other)
     {
