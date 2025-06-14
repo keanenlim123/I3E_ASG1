@@ -136,7 +136,6 @@ public class PlayerBehaviour : MonoBehaviour
 
         Debug.DrawRay(rayOrigin, transform.forward * interactRange, Color.green);
     }
-
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Spikes"))
@@ -146,8 +145,18 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 spikes.Collect(this);
                 Respawn();
-                transform.position = spawnLocation.position;
-                Debug.Log("Teleport");
+                Debug.Log("Teleport (Spikes)");
+            }
+        }
+
+        if (other.CompareTag("Water"))
+        {
+            WaterBehaviour water = other.GetComponent<WaterBehaviour>();
+            if (water != null)
+            {
+                water.Collect(this);
+                Respawn();
+                Debug.Log("Teleport (Water)");
             }
         }
     }
@@ -157,18 +166,44 @@ public class PlayerBehaviour : MonoBehaviour
         if (other.CompareTag("Spikes"))
         {
             Debug.Log("Player exited spikes trigger area.");
-            // Add any logic you want when the player leaves the spikes area here
+        }
+
+        if (other.CompareTag("Water"))
+        {
+            Debug.Log("Player exited water trigger area.");
         }
     }
+
 
     public void Respawn()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
-        rb.position = spawnLocation.position;
-    }
 
+        if (spawnLocation != null)
+        {
+            transform.position = spawnLocation.position;
+            Debug.Log("Teleporting to: " + spawnLocation.position);
+
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.Sleep(); // Prevents unwanted momentum on respawn
+            }
+
+            // Ensures the transform changes are immediately registered by Unity
+            Physics.SyncTransforms();
+        }
+        else
+        {
+            Debug.LogWarning("Spawn location not assigned!");
+        }
+
+        // Optional: Reset health, UI, or other stats here
+        // currentHealth = maxHealth;
+        // healthText.text = "HEALTH: " + currentHealth.ToString();
+        // Debug.Log("Player respawned and health reset.");
+    }
     void OnInteract()
     {
         if (canInteract)
@@ -217,7 +252,13 @@ public class PlayerBehaviour : MonoBehaviour
                 else
                 {
                     Debug.Log("You need a key to open the door!");
+                    interactPromptText.gameObject.SetActive(true);
+                    interactPromptText.text = "Door is Locked!";
                 }
+            }
+            else
+            {
+                interactPromptText.gameObject.SetActive(false);
             }
         }
     }

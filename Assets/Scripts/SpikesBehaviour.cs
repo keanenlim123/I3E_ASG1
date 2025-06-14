@@ -3,7 +3,7 @@ using UnityEngine;
 public class SpikesBehaviour : MonoBehaviour
 {
     [SerializeField]
-    int minusValue = 5;
+    int minusValue = 10;
     
     public void Collect(PlayerBehaviour player)
     {

@@ -5,9 +5,6 @@ public class WaterBehaviour : MonoBehaviour
     [SerializeField]
     int minusValue = 20;
 
-    [SerializeField]
-    float damageInterval = 1.0f; // Time in seconds between point deductions
-
     private float damageTimer = 0f;
 
     public void Collect(PlayerBehaviour player)
