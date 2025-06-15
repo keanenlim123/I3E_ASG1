@@ -1,6 +1,19 @@
+// <summary>
+// PlayerBehaviour.cs
+// This script handles the player's interactions with objects, UI updates, inventory tracking, and respawning logic in the game. 
+// </summary>
+// <author> Keanen Lim </author>
+// <date> 15/6/2025 </date>
+// <Student ID> S10270417C </author>
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
+// <summary>
+// Controls the player's behavior including interactions with items, doors, water, spikes,
+// UI updates, and score tracking.
+// </summary>
 public class PlayerBehaviour : MonoBehaviour
 {
     [SerializeField]
@@ -36,7 +49,6 @@ public class PlayerBehaviour : MonoBehaviour
     int currentPoints = 0;
     [SerializeField]
     public Transform spawnLocation;
-    // Flag to check if the player can interact with objects
     bool canInteract = false;
 
     ExitBehaviour currentExit = null;
@@ -62,7 +74,7 @@ public class PlayerBehaviour : MonoBehaviour
     private TextMeshProUGUI objectiveText;
     // The Interact callback for the Interact Input Action
     // This method is called when the player presses the interact button
-
+    // <summary>Called every frame to check for interactable objects using raycasting.</summary>
     void Update()
     {
         RaycastHit hit;
@@ -161,6 +173,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         Debug.DrawRay(rayOrigin, transform.forward * interactRange, Color.green);
     }
+    // <summary>Handles triggers such as spikes and water.</summary>
+    // The collider that the player has entered.
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Spikes"))
@@ -192,7 +206,8 @@ public class PlayerBehaviour : MonoBehaviour
             }
         }
     }
-
+    // <summary>Handles logic when exiting trigger zones.</summary>
+    // The collider exited.
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Spikes"))
@@ -205,8 +220,7 @@ public class PlayerBehaviour : MonoBehaviour
             Debug.Log("Player exited water trigger area.");
         }
     }
-
-
+    // <summary>Respawns the player at the designated spawn location.</summary>
     public void Respawn()
     {
         Rigidbody rb = GetComponent<Rigidbody>();
@@ -236,6 +250,7 @@ public class PlayerBehaviour : MonoBehaviour
         // healthText.text = "HEALTH: " + currentHealth.ToString();
         // Debug.Log("Player respawned and health reset.");
     }
+    // <summary>Handles interaction logic when the player presses the interact button.</summary>
     void OnInteract()
     {
         if (canInteract)
@@ -318,32 +333,34 @@ public class PlayerBehaviour : MonoBehaviour
         return hasBoots;
     }
 
-    // Method to modify the player's score
-    // This method takes an integer amount as a parameter
-    // It adds the amount to the player's current score
-    // The method is public so it can be accessed from other scripts
+    // <summary>Returns true if the player has boots.</summary>
+    // <summary>Adds points to the player’s score.</summary>
+    // The amount of points to add.
     public void ModifyPoints(int amt)
     {
         // Increase currentScore by the amount passed as an argument
         currentPoints += amt;
         UpdateScoreUI();
     }
-
+    // <summary>Subtracts points from the player’s score.</summary>
+    // The amount of points to subtract.
     public void MinusPoints(int amt)
     {
         // Increase currentScore by the amount passed as an argument
         currentPoints -= amt;
         UpdateScoreUI();
     }
+    // <summary>Updates the UI for the current score.</summary>
     void UpdateScoreUI()
     {
         scoreText.text = "Points: " + currentPoints.ToString() + " / 350";
     }
+    // <summary>Updates the UI for collected diamonds.</summary>
     void UpdateDiamondUI()
     {
         diamondCounterText.text = "Diamonds: " + diamondCount + " / 20";
     }
-
+    // <summary>Updates the UI for collected stars.</summary>
     void UpdateStarUI()
     {
         starCounterText.text = "Stars: " + starCount + " /3";
