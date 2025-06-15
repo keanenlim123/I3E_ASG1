@@ -7,10 +7,18 @@ public class WaterBehaviour : MonoBehaviour
 
     private float damageTimer = 0f;
 
+    AudioSource electricHit;
+    void Start()
+    {
+        electricHit = GetComponent<AudioSource>();
+    }
+
+
     public void Collect(PlayerBehaviour player)
     {
         if (!player.HasBoots())
         {
+            electricHit.Play();
             player.MinusPoints(minusValue);
         }
     }

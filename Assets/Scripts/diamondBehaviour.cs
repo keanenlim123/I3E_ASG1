@@ -7,6 +7,11 @@ public class diamondBehaviour : MonoBehaviour
     int diamondValue = 10;
     [SerializeField]
     float rotationSpeed = 90f;
+    AudioSource collectSound;
+    void Start()
+    {
+        collectSound = GetComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -21,15 +26,13 @@ public class diamondBehaviour : MonoBehaviour
     // The method is public so it can be accessed from other scripts
     public void Collect(PlayerBehaviour player)
     {
-        // Logic for collecting the coin
         Debug.Log("Diamond collected!");
-
-        // Add the diamond value to the player's score
-        // This is done by calling the ModifyScore method on the player object
-        // The diamond is passed as an argument to the method
-        // This allows the player to gain points when they collect the diamond
         player.ModifyPoints(diamondValue);
 
-        Destroy(gameObject); // Destroy the diamond object
+        if (collectSound != null)
+        {
+            AudioSource.PlayClipAtPoint(collectSound.clip, transform.position);
+        }
+        Destroy(gameObject); // No sound? Destroy immediately
     }
 }

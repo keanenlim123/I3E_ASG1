@@ -10,9 +10,12 @@ public class StarBehaviour : MonoBehaviour
     [SerializeField]
     float floatHeight = 0.1f;
     Vector3 startPos;
+
+    AudioSource starCollect;
     void Start()
     {
         startPos = transform.position;
+        starCollect = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -29,6 +32,11 @@ public class StarBehaviour : MonoBehaviour
     {
         // Logic for collecting the coin
         Debug.Log("Star collected!");
+        if (starCollect != null)
+        {
+            // Detach audio source from star so it can finish playing
+            AudioSource.PlayClipAtPoint(starCollect.clip, transform.position);
+        }
 
         // Add the star value to the player's score
         // This is done by calling the ModifyScore method on the player object

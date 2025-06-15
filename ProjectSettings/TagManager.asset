@@ -13,6 +13,7 @@ TagManager:
   - Door
   - Key
   - Door2
+  - Exit
   layers:
   - Default
   - TransparentFX

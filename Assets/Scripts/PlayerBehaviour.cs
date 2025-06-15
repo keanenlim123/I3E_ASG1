@@ -7,6 +7,17 @@ public class PlayerBehaviour : MonoBehaviour
     private TextMeshProUGUI interactPromptText;
 
     [SerializeField]
+    private Image goals;
+    [SerializeField]
+    private Image diamond;
+    [SerializeField]
+    private Image star;
+    [SerializeField]
+    private TextMeshProUGUI inventory;
+    [SerializeField]
+    private Image points;
+
+    [SerializeField]
     Image keyIcon;
 
     [SerializeField]
@@ -28,6 +39,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Flag to check if the player can interact with objects
     bool canInteract = false;
 
+    ExitBehaviour currentExit = null;
 
     diamondBehaviour currentDiamond = null;
 
@@ -90,6 +102,20 @@ public class PlayerBehaviour : MonoBehaviour
                 bootsCollected = null;
                 currentDoor = null;
             }
+            else if (hitObject.CompareTag("Exit"))
+            {
+                canInteract = true;
+                currentExit = hitObject.GetComponent<ExitBehaviour>();
+                currentDiamond = null;
+                currentStar = null;
+                keyCollected = null;
+                bootsCollected = null;
+                currentDoor = null;
+
+                interactPromptText.text = "Press E to open the chest!";
+                interactPromptText.gameObject.SetActive(true);
+            }
+
             else if (hitObject.CompareTag("Door2"))
             {
                 canInteract = true;
@@ -161,7 +187,7 @@ public class PlayerBehaviour : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Player has boots – safe in water!");
+                    Debug.Log("Player has boots - safe in water!");
                 }
             }
         }
@@ -244,6 +270,19 @@ public class PlayerBehaviour : MonoBehaviour
                 hasKey = true;
                 keyIcon.gameObject.SetActive(true); // Show the UI image
                 objectiveText.text = "- Open the Door!";
+            }
+            else if (currentExit != null)
+            {
+                Debug.Log("Interacting with chest (Exit)");
+                currentExit.SetFinalStats(diamondCount, starCount, currentPoints);
+                currentExit.ShowEndScreen();
+
+                // Hide gameplay UI
+                goals.gameObject.SetActive(false);
+                diamond.gameObject.SetActive(false);
+                star.gameObject.SetActive(false);
+                inventory.gameObject.SetActive(false);
+                points.gameObject.SetActive(false);
             }
             else if (currentDoor2 != null)
             {
