@@ -22,6 +22,7 @@ Recommended Requirements
 | ------------------ | -------------------- |
 | Move               | WASD / Arrow Keys    |
 | Jump               | Spacebar             |
+| Sprint             | Shift                |
 | Interact / Collect | E                    |
 
 # Game Objective
