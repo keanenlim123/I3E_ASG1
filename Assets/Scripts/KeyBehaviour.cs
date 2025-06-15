@@ -4,6 +4,12 @@ public class KeyBehaviour : MonoBehaviour
 {
     [SerializeField]
     float rotationSpeed = 90f;
+    private AudioSource keyAudioSource;
+
+    void Start()
+    {
+        keyAudioSource = GetComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -12,6 +18,11 @@ public class KeyBehaviour : MonoBehaviour
     }
     public void Collect(PlayerBehaviour player)
     {
-        Destroy(gameObject); // Destroy the key object
+        if (keyAudioSource != null && keyAudioSource.clip != null)
+        {
+            AudioSource.PlayClipAtPoint(keyAudioSource.clip, transform.position);
+        }
+
+        Destroy(gameObject); 
     }
 }
