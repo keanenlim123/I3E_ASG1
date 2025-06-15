@@ -2,11 +2,27 @@
 Game Description: 
 Diamonds Dune is inspired by the series Indiana Jones. As the player, you explore mysterious desert chambers in search of Diamonds and Stars, while avoiding deadly traps such as spikes and electrified water. Equipped with tools like boots and a key, you must collect all treasures, unlock doors, and ultimately escape the ruin through a mysterious chest.
 
+# System Requirements
+Minimum Requirements:
+- Operating System: Windows 10 (64-bit) or later / macOS 10.14 or later
+- Processor: Intel Core i3 or equivalent
+- Memory: 4 GB RAM
+- Graphics: DirectX 11 compatible GPU with 1 GB VRAM
+- Storage: At least 500 MB of free disk space
+
+Recommended Requirements
+- Operating System: Windows 10/11 (64-bit) / macOS 10.15 or later
+- Processor: Intel Core i5 or better
+- Memory: 8 GB RAM or higher
+- Graphics: Dedicated GPU with 2 GB VRAM or higher
+- Storage: At least 1 GB free disk space
+
 # Controls & Gameplay Instructions
 | Action             | Key                  |
 | ------------------ | -------------------- |
 | Move               | WASD / Arrow Keys    |
 | Jump               | Spacebar             |
+| Sprint             | Shift                |
 | Interact / Collect | E                    |
 
 # Game Objective
@@ -30,3 +46,4 @@ Diamonds Dune is inspired by the series Indiana Jones. As the player, you explor
 - Google Fonts: Use for UI (Diamonds, Star Points)
   https://fonts.google.com/specimen/Electrolize?preview.text=game%0A
 - Chatgpt: Use for Audio and Player Respawn function
+
